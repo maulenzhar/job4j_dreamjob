@@ -10,4 +10,5 @@ public class Job4jDreamjobApplication {
         SpringApplication.run(Job4jDreamjobApplication.class, args);
     }
 
+
 }
