@@ -17,7 +17,7 @@ public class MemoryCandidateRepository implements CandidateRepository {
 
     private final Map<Integer, Candidate> candidates = new HashMap<>();
 
-    private MemoryCandidateRepository() {
+    public MemoryCandidateRepository() {
         save(new Candidate(0, "Charizard", "", LocalDateTime.now()));
         save(new Candidate(0, "Bulbasaur", "", LocalDateTime.now()));
         save(new Candidate(0, "Squirtle", "", LocalDateTime.now()));
