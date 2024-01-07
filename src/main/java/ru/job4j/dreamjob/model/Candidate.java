@@ -27,11 +27,12 @@ public class Candidate {
     public Candidate() {
     }
 
-    public Candidate(int id, String name, String description, LocalDateTime creationDate, int cityId, int fileId) {
+    public Candidate(int id, String name, String description, LocalDateTime creationDate, boolean visible, int cityId, int fileId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
+        this.visible = visible;
         this.cityId = cityId;
         this.fileId = fileId;
     }
