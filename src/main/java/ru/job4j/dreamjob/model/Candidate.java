@@ -7,7 +7,7 @@ public class Candidate {
     private int id;
     private String name;
     private String description;
-    private LocalDateTime creationDate = LocalDateTime.now();;
+    private LocalDateTime creationDate = LocalDateTime.now();
     private boolean visible;
     private int cityId;
     private int fileId;
