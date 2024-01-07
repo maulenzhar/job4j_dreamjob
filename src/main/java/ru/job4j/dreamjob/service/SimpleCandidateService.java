@@ -2,6 +2,7 @@ package ru.job4j.dreamjob.service;
 
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
+import ru.job4j.dreamjob.dto.FileDto;
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.repository.CandidateRepository;
 import ru.job4j.dreamjob.repository.MemoryCandidateRepository;
@@ -13,36 +14,57 @@ import java.util.Optional;
 @ThreadSafe
 public class SimpleCandidateService implements CandidateService {
 
-    private CandidateRepository vacancyRepository = new MemoryCandidateRepository();
+    private CandidateRepository candidateRepository = new MemoryCandidateRepository();
+    private final FileService fileService;
 
-    public SimpleCandidateService(CandidateRepository vacancyRepository) {
-        this.vacancyRepository = vacancyRepository;
+    public SimpleCandidateService(CandidateRepository candidateRepository, FileService fileService) {
+        this.candidateRepository = candidateRepository;
+        this.fileService = fileService;
     }
 
-    private SimpleCandidateService() { }
-
     @Override
-    public Candidate save(Candidate candidate) {
-        return vacancyRepository.save(candidate);
+    public Candidate save(Candidate candidate, FileDto image) {
+        saveNewFile(candidate, image);
+        return candidateRepository.save(candidate);
+    }
+
+    private void saveNewFile(Candidate candidate, FileDto image) {
+        var file = fileService.save(image);
+        candidate.setFileId(file.getId());
     }
 
     @Override
     public boolean deleteById(int id) {
-        return vacancyRepository.deleteById(id);
+        var fileOptional = findById(id);
+        if (fileOptional.isPresent()) {
+            candidateRepository.deleteById(id);
+            fileService.deleteById(fileOptional.get().getFileId());
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public boolean update(Candidate candidate) {
-        return vacancyRepository.update(candidate);
+    public boolean update(Candidate candidate, FileDto image) {
+        var isNewFileEmpty = image.getContent().length == 0;
+        if (isNewFileEmpty) {
+            return candidateRepository.update(candidate);
+        }
+        /* если передан новый не пустой файл, то старый удаляем, а новый сохраняем */
+        var oldFileId = candidate.getFileId();
+        saveNewFile(candidate, image);
+        var isUpdated = candidateRepository.update(candidate);
+        fileService.deleteById(oldFileId);
+        return isUpdated;
     }
 
     @Override
     public Optional<Candidate> findById(int id) {
-        return vacancyRepository.findById(id);
+        return candidateRepository.findById(id);
     }
 
     @Override
     public Collection<Candidate> findAll() {
-        return vacancyRepository.findAll();
+        return candidateRepository.findAll();
     }
 }

@@ -5,19 +5,39 @@ import java.util.Objects;
 
 public class Candidate {
     private int id;
-
     private String name;
     private String description;
-    private LocalDateTime creationDate;
-
+    private LocalDateTime creationDate = LocalDateTime.now();;
+    private boolean visible;
     private int cityId;
+    private int fileId;
 
-    public Candidate(int id, String name, String description, LocalDateTime creationDate, int cityId) {
+    public Candidate() {
+    }
+
+    public Candidate(int id, String name, String description, LocalDateTime creationDate, int cityId, int fileId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
         this.cityId = cityId;
+        this.fileId = fileId;
+    }
+
+    public boolean getVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public int getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 
     public int getCityId() {
